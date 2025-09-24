@@ -1,8 +1,37 @@
-<div class="search-box">
-  <input id="school-search" type="text" placeholder="예: 모아중학교" />
-  <button id="search-btn">검색</button>
-</div>
-<p class="notice">⚠️ 알레르기 주의: 1.난류 2.우유 3.메밀 4.땅콩 5.대두 6.밀 7.고등어 8.게 9.새우 10.돼지고기 11.복숭아 12.토마토 13.아황산류 14.호두 15.닭고기 16.쇠고기 17.오징어 18.조개류 19.잣</p>
-<div id="meal-results"></div>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>급식모아</title>
+  <link rel="stylesheet" href="public/style.css">
+</head>
+<body>
+  <div class="overlay">
+    <h1>급식모아</h1>
 
+    <!-- 검색창 -->
+    <div class="search-box">
+      <input id="school-search" type="text" placeholder="예: 모아중학교" />
+      <button id="search-btn">검색</button>
+      <button id="confirm-btn" class="hidden">확인</button>
+    </div>
 
+    <!-- 검색된 학교 표시 -->
+    <div id="school-result"></div>
+
+    <!-- 알레르기 안내 -->
+    <div class="allergy-box">
+      <button id="allergy-toggle">알레르기 안내</button>
+      <div id="allergy-info" class="hidden">
+        <p>⚠️ 알레르기 주의: 1.난류 2.우유 3.메밀 4.땅콩 5.대두 6.밀 7.고등어 8.게 9.새우 10.돼지고기 
+        11.복숭아 12.토마토 13.아황산류 14.호두 15.닭고기 16.쇠고기 17.오징어 18.조개류 19.잣</p>
+      </div>
+    </div>
+
+    <!-- 급식 결과 -->
+    <div id="meal-results"></div>
+  </div>
+
+  <script src="public/script.js"></script>
+</body>
+</html>
