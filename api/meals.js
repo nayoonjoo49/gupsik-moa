@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 export default async function handler(req, res) {
   const { officeCode, schoolCode, meal = 2 } = req.query;
 
@@ -9,7 +7,7 @@ export default async function handler(req, res) {
 
   const NEIS_KEY = process.env.NEIS_KEY;
 
-  // 오늘 날짜 구하기 (YYYYMMDD)
+  // 오늘 날짜 (YYYYMMDD)
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -20,7 +18,7 @@ export default async function handler(req, res) {
     const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${NEIS_KEY}&Type=json&pIndex=1&pSize=100&ATPT_OFCDC_SC_CODE=${officeCode}&SD_SCHUL_CODE=${schoolCode}&MMEAL_SC_CODE=${meal}&MLSV_YMD=${date}`;
     console.log("NEIS 호출 URL:", url);
 
-    const response = await fetch(url);
+    const response = await fetch(url);  // ✅ node-fetch 대신 내장 fetch
     const data = await response.json();
 
     if (!data.mealServiceDietInfo || !data.mealServiceDietInfo[1]) {
