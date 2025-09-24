@@ -1,40 +1,37 @@
+import fetch from 'node-fetch';
+
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const { officeCode, schoolCode, meal, year, month } = req.query;
+
+  if (!officeCode || !schoolCode || !year || !month) {
+    return res.status(400).json({ error: "필수 파라미터(officeCode, schoolCode, year, month)가 없습니다." });
+  }
+
+  const NEIS_KEY = process.env.NEIS_KEY;
+
+  // 이번 달의 시작일과 마지막일 구하기
+  const startDate = `${year}${month.padStart(2, '0')}01`;
+  const lastDay = new Date(year, month, 0).getDate(); // 마지막 날짜
+  const endDate = `${year}${month.padStart(2, '0')}${String(lastDay).padStart(2, '0')}`;
+
   try {
-    const { office, school, from, to, meal } = req.query;
-    if (!office || !school || !from || !to) {
-      res.status(400).json({ error: 'Missing params' });
-      return;
+    const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${NEIS_KEY}&Type=json&pIndex=1&pSize=100&ATPT_OFCDC_SC_CODE=${officeCode}&SD_SCHUL_CODE=${schoolCode}&MMEAL_SC_CODE=${meal}&MLSV_FROM_YMD=${startDate}&MLSV_TO_YMD=${endDate}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.mealServiceDietInfo) {
+      return res.status(200).json([]);
     }
-    const key = process.env.NEIS_KEY;
-    if (!key) {
-      res.status(500).json({ error: 'Server not configured: NEIS_KEY missing' });
-      return;
-    }
-    const params = new URLSearchParams({
-      KEY: key,
-      Type: 'json',
-      pIndex: '1',
-      pSize: '100',
-      ATPT_OFCDC_SC_CODE: office,
-      SD_SCHUL_CODE: school,
-      MLSV_FROM_YMD: from,
-      MLSV_TO_YMD: to,
-    });
-    if (meal) params.set('MMEAL_SC_CODE', meal);
-    const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?${params.toString()}`;
-    const resp = await fetch(url);
-    const json = await resp.json().catch(() => null);
-    const rows = json?.mealServiceDietInfo?.[1]?.row || [];
-    const slim = rows.map(r => ({
-      MLSV_YMD: r.MLSV_YMD,
-      MMEAL_SC_NM: r.MMEAL_SC_NM,
-      DDISH_NM: r.DDISH_NM,
-      CAL_INFO: r.CAL_INFO,
-      NTR_INFO: r.NTR_INFO,
+
+    const meals = data.mealServiceDietInfo[1].row.map(item => ({
+      date: item.MLSV_YMD,
+      menu: item.DDISH_NM.replace(/<br\s*\/?>/gi, ', ')
     }));
-    res.status(200).json(slim);
+
+    res.status(200).json(meals);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch' });
+    console.error("API 호출 오류:", err);
+    res.status(500).json({ error: "급식 데이터를 불러오는 중 오류 발생" });
   }
 }
