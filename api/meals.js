@@ -1,27 +1,26 @@
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
-  const { officeCode, schoolCode, meal, year, month } = req.query;
+  const { officeCode, schoolCode, meal = 2, year, month } = req.query;
 
   if (!officeCode || !schoolCode || !year || !month) {
-    return res.status(400).json({ error: "필수 파라미터(officeCode, schoolCode, year, month)가 없습니다." });
+    return res.status(400).json({ error: "필수 파라미터가 없습니다." });
   }
 
   const NEIS_KEY = process.env.NEIS_KEY;
-
-  // 이번 달의 시작일과 마지막일 구하기
   const startDate = `${year}${month.padStart(2, '0')}01`;
-  const lastDay = new Date(year, month, 0).getDate(); // 마지막 날짜
+  const lastDay = new Date(year, month, 0).getDate();
   const endDate = `${year}${month.padStart(2, '0')}${String(lastDay).padStart(2, '0')}`;
 
   try {
     const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${NEIS_KEY}&Type=json&pIndex=1&pSize=100&ATPT_OFCDC_SC_CODE=${officeCode}&SD_SCHUL_CODE=${schoolCode}&MMEAL_SC_CODE=${meal}&MLSV_FROM_YMD=${startDate}&MLSV_TO_YMD=${endDate}`;
+    console.log("NEIS 호출 URL:", url);
 
     const response = await fetch(url);
     const data = await response.json();
 
-    if (!data.mealServiceDietInfo) {
-      return res.status(200).json([]);
+    if (!data.mealServiceDietInfo || !data.mealServiceDietInfo[1]) {
+      return res.status(200).json([]); // 급식 없음
     }
 
     const meals = data.mealServiceDietInfo[1].row.map(item => ({
