@@ -52,11 +52,33 @@ body {
   background: #45a049;
 }
 
+/* 검색 결과 */
+.school-item {
+  padding: 10px;
+  margin: 5px 0;
+  background: white;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.school-item:hover {
+  background: #f5f5f5;
+}
+.school-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+.school-addr {
+  font-size: 14px;
+  color: #555;
+}
+
 /* 알레르기 안내 */
 .allergy-box {
   margin: 15px 0;
 }
-
 #allergy-toggle {
   background: #f57c00;
   color: white;
@@ -66,11 +88,7 @@ body {
   cursor: pointer;
   font-weight: bold;
 }
-
-#allergy-info.hidden {
-  display: none;
-}
-
+#allergy-info.hidden { display: none; }
 #allergy-info {
   margin-top: 10px;
   font-size: 14px;
@@ -78,12 +96,27 @@ body {
   line-height: 1.4;
 }
 
-/* 급식 카드 */
+/* 급식 출력 */
+#meal-container {
+  margin-top: 20px;
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+}
+.month-select {
+  text-align: left;
+  margin-bottom: 15px;
+}
+.month-select select {
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
 .card {
   background: white;
-  border-radius: 20px;
-  padding: 20px;
-  margin-top: 15px;
+  border-radius: 15px;
+  padding: 15px;
+  margin-top: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   text-align: left;
 }
