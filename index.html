@@ -3,40 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>급식모아</title>
-  <link rel="stylesheet" href="public/style.css">
+  <link rel="stylesheet" href="/public/style.css">
 </head>
 <body>
-  <div class="overlay">
-    <h1>급식모아</h1>
+  <div class="container">
+    <h1>🍱 급식모아</h1>
 
-    <!-- 검색창 -->
+    <!-- 학교 검색 -->
     <div class="search-box">
-      <input id="school-search" type="text" placeholder="예: 모아중학교" />
-      <button id="search-btn">검색</button>
+      <input type="text" id="schoolInput" placeholder="학교 이름을 입력하세요">
+      <button onclick="searchSchool()">검색</button>
     </div>
-
-    <!-- 검색된 학교 결과 -->
-    <div id="school-result"></div>
+    <div id="schoolResult"></div>
 
     <!-- 알레르기 안내 -->
     <div class="allergy-box">
-      <button id="allergy-toggle">알레르기 안내</button>
-      <div id="allergy-info" class="hidden">
-        <p>⚠️ 알레르기 주의: 1.난류 2.우유 3.메밀 4.땅콩 5.대두 6.밀 7.고등어 8.게 9.새우 10.돼지고기 
-        11.복숭아 12.토마토 13.아황산류 14.호두 15.닭고기 16.쇠고기 17.오징어 18.조개류 19.잣</p>
+      <button onclick="toggleAllergy()">알레르기 안내</button>
+      <div id="allergyInfo" class="hidden">
+        <p>알레르기 성분 표시는 학교 급식 데이터에 따라 달라질 수 있습니다.</p>
       </div>
     </div>
 
-    <!-- 급식 출력 -->
-    <div id="meal-container" class="hidden">
-      <div class="month-select">
-        <label for="month">월 선택: </label>
-        <select id="month"></select>
-      </div>
-      <div id="meal-results"></div>
+    <!-- 선택된 학교와 월 -->
+    <div id="mealControls" class="hidden">
+      <label for="monthSelect">월 선택: </label>
+      <select id="monthSelect" onchange="loadMeals()">
+        <option value="1">1월</option>
+        <option value="2">2월</option>
+        <option value="3">3월</option>
+        <option value="4">4월</option>
+        <option value="5">5월</option>
+        <option value="6">6월</option>
+        <option value="7">7월</option>
+        <option value="8">8월</option>
+        <option value="9">9월</option>
+        <option value="10">10월</option>
+        <option value="11">11월</option>
+        <option value="12">12월</option>
+      </select>
     </div>
+
+    <!-- 급식 결과 -->
+    <div id="result"></div>
   </div>
 
-  <script src="public/script.js"></script>
+  <script src="/public/script.js"></script>
 </body>
 </html>
