@@ -1,9 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('school-search');
   const searchBtn = document.getElementById('search-btn');
+  const confirmBtn = document.getElementById('confirm-btn');
   const resultsDiv = document.getElementById('meal-results');
+  const schoolResult = document.getElementById('school-result');
+  const allergyToggle = document.getElementById('allergy-toggle');
+  const allergyInfo = document.getElementById('allergy-info');
 
-  async function searchSchool() {
+  let selectedSchool = null;
+
+  // 알레르기 안내 토글
+  allergyToggle.addEventListener('click', () => {
+    allergyInfo.classList.toggle('hidden');
+  });
+
+  // 학교 검색
+  searchBtn.addEventListener('click', async () => {
     const schoolName = searchInput.value.trim();
     if (!schoolName) return;
 
@@ -11,13 +23,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const schoolRes = await fetch(`/api/schools?name=${encodeURIComponent(schoolName)}`);
       const schoolData = await schoolRes.json();
       if (!schoolData || schoolData.length === 0) {
-        resultsDiv.innerHTML = "<p>학교를 찾을 수 없습니다.</p>";
+        schoolResult.innerHTML = "<p>학교를 찾을 수 없습니다.</p>";
+        confirmBtn.classList.add('hidden');
         return;
       }
 
-      const { ATPT_OFCDC_SC_CODE, SD_SCHUL_CODE } = schoolData[0];
+      selectedSchool = schoolData[0];
+      schoolResult.innerHTML = `<p>검색된 학교: <strong>${selectedSchool.SCHUL_NM}</strong></p>`;
+      confirmBtn.classList.remove('hidden');
+    } catch (err) {
+      schoolResult.innerHTML = "<p>검색 중 오류가 발생했습니다.</p>";
+      console.error(err);
+    }
+  });
 
-      // 점심 고정
+  // 확인 버튼 → 급식 출력
+  confirmBtn.addEventListener('click', async () => {
+    if (!selectedSchool) return;
+
+    const { ATPT_OFCDC_SC_CODE, SD_SCHUL_CODE } = selectedSchool;
+
+    try {
+      // 점심 고정 (meal=2)
       const mealRes = await fetch(`/api/meals?officeCode=${ATPT_OFCDC_SC_CODE}&schoolCode=${SD_SCHUL_CODE}&meal=2`);
       const mealData = await mealRes.json();
 
@@ -33,16 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
          </div>`
       ).join('');
     } catch (err) {
-      resultsDiv.innerHTML = "<p>오류가 발생했습니다.</p>";
+      resultsDiv.innerHTML = "<p>급식을 불러오는 중 오류가 발생했습니다.</p>";
       console.error(err);
     }
-  }
-
-  // 버튼 클릭
-  searchBtn.addEventListener('click', searchSchool);
-
-  // 엔터키 입력
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') searchSchool();
   });
 });
