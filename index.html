@@ -13,10 +13,9 @@
     <div class="search-box">
       <input id="school-search" type="text" placeholder="예: 모아중학교" />
       <button id="search-btn">검색</button>
-      <button id="confirm-btn" class="hidden">확인</button>
     </div>
 
-    <!-- 검색된 학교 표시 -->
+    <!-- 검색된 학교 결과 -->
     <div id="school-result"></div>
 
     <!-- 알레르기 안내 -->
@@ -28,8 +27,14 @@
       </div>
     </div>
 
-    <!-- 급식 결과 -->
-    <div id="meal-results"></div>
+    <!-- 급식 출력 -->
+    <div id="meal-container" class="hidden">
+      <div class="month-select">
+        <label for="month">월 선택: </label>
+        <select id="month"></select>
+      </div>
+      <div id="meal-results"></div>
+    </div>
   </div>
 
   <script src="public/script.js"></script>
