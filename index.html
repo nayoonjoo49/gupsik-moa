@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>급식모아 · 내 학교 급식 한눈에</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header>
+    <h1>🍱 급식모아</h1>
+    <p class="subtitle">지역/학교 선택 → 한 달 급식표를 한 번에 확인</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <label for="school-search">학교 이름 검색</label>
+      <div class="row">
+        <input id="school-search" type="text" placeholder="예: 죽전중학교" />
+        <button id="btn-search">검색</button>
+      </div>
+      <div id="search-results" class="list"></div>
+    </section>
+
+    <section id="selected-school" class="card hidden">
+      <div class="row">
+        <div>
+          <div class="pill">선택한 학교</div>
+          <h2 id="school-name"></h2>
+          <p id="school-meta"></p>
+        </div>
+        <div class="month-picker">
+          <input id="month" type="month" />
+          <select id="meal-type">
+            <option value="">전체 식사</option>
+            <option value="1">아침</option>
+            <option value="2" selected>점심</option>
+            <option value="3">저녁</option>
+          </select>
+          <button id="btn-load">불러오기</button>
+        </div>
+      </div>
+      <div id="meals" class="meals"></div>
+    </section>
+
+    <section class="card tips">
+      <details>
+        <summary>알레르기 번호 안내</summary>
+        <p>1.난류 2.우유 3.메밀 4.땅콩 5.대두 6.밀 7.고등어 8.게 9.새우 10.돼지고기 11.복숭아 12.토마토 13.아황산류 14.호두 15.닭고기 16.쇠고기 17.오징어 18.조개류 19.잣</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 급식모아 · 데이터 출처: NEIS 교육정보 개방 포털</p>
+  </footer>
+
+  <script src="/public/script.js"></script>
+</body>
+</html>
