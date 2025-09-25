@@ -62,12 +62,14 @@ async function loadMeals() {
   const year = new Date().getFullYear();
   const month = document.getElementById("monthSelect").value;
 
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "<p>급식 불러오는 중...</p>"; // ✅ 즉시 로딩 표시
+
   try {
     const res = await fetch(`/api/meals?officeCode=${selectedSchool.officeCode}&schoolCode=${selectedSchool.schoolCode}&year=${year}&month=${month}`);
     const meals = await res.json();
 
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = "";
+    resultDiv.innerHTML = ""; // 로딩 문구 지우기
 
     if (!meals || meals.length === 0) {
       resultDiv.innerHTML = "<p>해당 월의 급식이 없습니다.</p>";
@@ -89,7 +91,7 @@ async function loadMeals() {
     });
   } catch (e) {
     console.error("급식 불러오기 오류:", e);
-    document.getElementById("result").innerHTML = "<p>급식 데이터를 불러오는 중 오류 발생</p>";
+    resultDiv.innerHTML = "<p>급식 데이터를 불러오는 중 오류 발생</p>";
   }
 }
 
