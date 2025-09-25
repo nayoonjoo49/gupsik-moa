@@ -1,7 +1,19 @@
-document.getElementById("searchForm").addEventListener("submit", async function (e) {
+// 검색 버튼 & 엔터 입력 둘 다 동작
+const form = document.getElementById("searchForm");
+const input = document.getElementById("schoolInput");
+
+form.addEventListener("submit", handleSearch);
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    handleSearch(e);
+  }
+});
+
+async function handleSearch(e) {
   e.preventDefault();
 
-  const query = document.getElementById("schoolInput").value.trim();
+  const query = input.value.trim();
   if (!query) return;
 
   const schoolResults = document.getElementById("schoolResults");
@@ -33,7 +45,7 @@ document.getElementById("searchForm").addEventListener("submit", async function 
     schoolResults.innerHTML = "학교 검색 오류 발생";
     console.error(error);
   }
-});
+}
 
 async function loadMeals(school) {
   const mealsDiv = document.getElementById("meals");
@@ -67,7 +79,7 @@ async function loadMeals(school) {
       const mealDiv = document.createElement("div");
       mealDiv.className = "meal-card";
 
-      // 사진이 있을 경우에만 <img> 넣기
+      // 사진이 있을 경우만 출력
       let imgHTML = "";
       if (meal.MLSV_FGR && meal.MLSV_FGR.trim() !== "") {
         imgHTML = `<img src="${meal.MLSV_FGR}" alt="급식 사진" class="meal-img">`;
