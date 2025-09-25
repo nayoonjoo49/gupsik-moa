@@ -17,11 +17,25 @@ async function searchSchool() {
       return;
     }
 
+    // 검색된 학교 리스트 표시
     schools.forEach(school => {
       const item = document.createElement("div");
       item.className = "school-item";
-      item.innerHTML = `<strong>${school.name}</strong> <span class="address">${school.address}</span>`;
-      item.onclick = () => selectSchool(school);
+
+      // NEIS API에서 오는 데이터 키 이름 맞추기
+      const schoolName = school.SCHUL_NM || school.name;
+      const schoolAddr = school.ORG_RDNMA || school.address || "";
+
+      item.innerHTML = `<strong>${schoolName}</strong> <span class="address">${schoolAddr}</span>`;
+
+      // 클릭 시 선택
+      item.onclick = () => selectSchool({
+        officeCode: school.ATPT_OFCDC_SC_CODE,
+        schoolCode: school.SD_SCHUL_CODE,
+        name: schoolName,
+        address: schoolAddr
+      });
+
       schoolDiv.appendChild(item);
     });
   } catch (e) {
