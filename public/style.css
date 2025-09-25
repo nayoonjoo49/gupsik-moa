@@ -1,84 +1,96 @@
-let selectedSchool = null;
-
-// 학교 검색
-async function searchSchool() {
-  const name = document.getElementById("schoolInput").value.trim();
-  if (!name) return;
-
-  try {
-    const res = await fetch(`/api/schools?name=${name}`);
-    const schools = await res.json();
-
-    const schoolDiv = document.getElementById("schoolResult");
-    schoolDiv.innerHTML = "";
-
-    if (schools.length === 0) {
-      schoolDiv.innerHTML = "<p>검색된 학교가 없습니다.</p>";
-      return;
-    }
-
-    schools.forEach(school => {
-      const item = document.createElement("div");
-      item.className = "school-item";
-      item.innerHTML = `<strong>${school.name}</strong> <span class="address">${school.address}</span>`;
-      item.onclick = () => selectSchool(school);
-      schoolDiv.appendChild(item);
-    });
-  } catch (e) {
-    console.error("학교 검색 오류:", e);
-  }
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: url('/public/bg.jpg') no-repeat center center fixed; /* 주인님 배경 유지 */
+  background-size: cover;
 }
 
-function selectSchool(school) {
-  selectedSchool = school;
-  document.getElementById("mealControls").classList.remove("hidden");
-
-  // 현재 달 자동 선택
-  const now = new Date();
-  document.getElementById("monthSelect").value = now.getMonth() + 1;
-
-  loadMeals();
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 12px;
 }
 
-// 급식 불러오기
-async function loadMeals() {
-  if (!selectedSchool) return;
-  const year = new Date().getFullYear();
-  const month = document.getElementById("monthSelect").value;
-
-  try {
-    const res = await fetch(`/api/meals?officeCode=${selectedSchool.officeCode}&schoolCode=${selectedSchool.schoolCode}&year=${year}&month=${month}`);
-    const meals = await res.json();
-
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = "";
-
-    if (meals.length === 0) {
-      resultDiv.innerHTML = "<p>해당 월의 급식이 없습니다.</p>";
-      return;
-    }
-
-    meals.sort((a, b) => a.date.localeCompare(b.date));
-
-    meals.forEach(meal => {
-      const y = meal.date.slice(0, 4);
-      const m = parseInt(meal.date.slice(4, 6));
-      const d = parseInt(meal.date.slice(6, 8));
-      const dateText = `${y}년 ${m}월 ${d}일`;
-
-      const card = document.createElement("div");
-      card.className = "meal-card";
-      card.innerHTML = `<h3>${dateText}</h3><p>${meal.menu}</p>`;
-      resultDiv.appendChild(card);
-    });
-  } catch (e) {
-    console.error("급식 불러오기 오류:", e);
-    document.getElementById("result").innerHTML = "<p>급식 데이터를 불러오는 중 오류 발생</p>";
-  }
+.search-box {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
 }
 
-// 알레르기 안내 토글
-function toggleAllergy() {
-  const info = document.getElementById("allergyInfo");
-  info.classList.toggle("hidden");
+/* 입력창 */
+.search-box input {
+  flex: 1;
+  padding: 14px;          /* 크기 키움 */
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 18px;        /* 글씨 크게 */
+}
+
+/* 검색 버튼 */
+.search-box button {
+  background: #FDB664;    /* 주인님 요청 색상 */
+  border: none;
+  color: white;
+  padding: 14px 20px;     /* 크기 키움 */
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  transition: opacity 0.3s;
+}
+.search-box button:hover {
+  opacity: 0.9;
+}
+
+/* 학교 검색 결과 */
+.school-item {
+  cursor: pointer;
+  margin: 5px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+}
+.school-item:hover {
+  background: #f0f0f0;
+}
+.school-item .address {
+  color: #777; /* 연한 회색 */
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+/* 알레르기 안내 */
+.allergy-box {
+  margin: 15px 0;
+}
+
+#allergy-toggle {
+  background: #FDB664;    /* 요청 색상 */
+  color: white;
+  border: none;
+  padding: 12px 18px;     /* 크기 키움 */
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: opacity 0.3s;
+}
+#allergy-toggle:hover {
+  opacity: 0.9;
+}
+
+.hidden {
+  display: none;
+}
+
+/* 급식 카드 */
+.meal-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 10px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
