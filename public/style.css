@@ -1,51 +1,40 @@
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background: url('/public/bg.jpg') no-repeat center center fixed;
-  background-size: cover;
-}
-
-.container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 12px;
-}
-
-.search-box {
-  margin-bottom: 10px;
-}
-
-.school-item {
-  cursor: pointer;
-  margin: 5px 0;
-  padding: 8px;
+/* 입력창 */
+.search-box input {
+  flex: 1;
+  padding: 14px;              /* 입력창 높이 ↑ */
   border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #fafafa;
-}
-.school-item:hover {
-  background: #f0f0f0;
-}
-.school-item .address {
-  color: #777; /* 연한 회색 */
-  font-size: 0.9em;
-  margin-left: 8px;
-}
-
-.allergy-box {
-  margin: 15px 0;
-}
-
-.hidden {
-  display: none;
-}
-
-.meal-card {
-  background: white;
   border-radius: 12px;
-  padding: 15px;
-  margin: 10px 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-size: 18px;            /* 글씨 크기 ↑ */
+}
+
+/* 검색 버튼 */
+.search-box button {
+  background: #FDB664;        /* 주인님 요청 색상 */
+  border: none;
+  color: white;
+  padding: 14px 20px;         /* 버튼 크기 ↑ */
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;            /* 글씨 크기 ↑ */
+  transition: opacity 0.3s;
+}
+.search-box button:hover {
+  opacity: 0.9;
+}
+
+/* 알레르기 안내 버튼 */
+#allergy-toggle {
+  background: #FDB664;        /* 동일한 색상 적용 */
+  color: white;
+  border: none;
+  padding: 12px 18px;         /* 크기 ↑ */
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: opacity 0.3s;
+}
+#allergy-toggle:hover {
+  opacity: 0.9;
 }
