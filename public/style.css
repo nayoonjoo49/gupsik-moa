@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  background: url('/public/bg.jpg') no-repeat center center fixed; /* 주인님 배경 유지 */
+  background: url('/public/bg.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
@@ -22,18 +22,18 @@ body {
 /* 입력창 */
 .search-box input {
   flex: 1;
-  padding: 14px;          /* 크기 키움 */
+  padding: 14px;
   border: 1px solid #ccc;
   border-radius: 12px;
-  font-size: 18px;        /* 글씨 크게 */
+  font-size: 18px;
 }
 
 /* 검색 버튼 */
 .search-box button {
-  background: #FDB664;    /* 주인님 요청 색상 */
+  background: #FDB664;
   border: none;
   color: white;
-  padding: 14px 20px;     /* 크기 키움 */
+  padding: 14px 20px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: bold;
@@ -57,7 +57,7 @@ body {
   background: #f0f0f0;
 }
 .school-item .address {
-  color: #777; /* 연한 회색 */
+  color: #777;
   font-size: 0.9em;
   margin-left: 8px;
 }
@@ -68,10 +68,10 @@ body {
 }
 
 #allergy-toggle {
-  background: #FDB664;    /* 요청 색상 */
+  background: #FDB664;
   color: white;
   border: none;
-  padding: 12px 18px;     /* 크기 키움 */
+  padding: 12px 18px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: bold;
@@ -93,4 +93,13 @@ body {
   padding: 15px;
   margin: 10px 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* 급식 사진 */
+.meal-card img.meal-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  margin-top: 10px;
+  border-radius: 12px;
 }
