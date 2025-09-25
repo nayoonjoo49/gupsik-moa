@@ -18,13 +18,13 @@
 
     <!-- 알레르기 안내 -->
     <div class="allergy-box">
-      <button onclick="toggleAllergy()">알레르기 안내</button>
+      <button id="allergy-toggle" onclick="toggleAllergy()">알레르기 안내</button>
       <div id="allergyInfo" class="hidden">
-        <p>알레르기 성분 표시는 학교 급식 데이터에 따라 달라질 수 있습니다.</p>
+        <p>⚠️ 알레르기 성분 표시는 학교 급식 데이터에 따라 달라질 수 있습니다.</p>
       </div>
     </div>
 
-    <!-- 선택된 학교와 월 -->
+    <!-- 월 선택 + 급식 결과 -->
     <div id="mealControls" class="hidden">
       <label for="monthSelect">월 선택: </label>
       <select id="monthSelect" onchange="loadMeals()">
@@ -43,7 +43,6 @@
       </select>
     </div>
 
-    <!-- 급식 결과 -->
     <div id="result"></div>
   </div>
 
