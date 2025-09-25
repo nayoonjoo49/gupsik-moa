@@ -86,7 +86,13 @@ async function loadMeals() {
 
       const card = document.createElement("div");
       card.className = "meal-card";
-      card.innerHTML = `<h3>${dateText}</h3><p>${meal.menu}</p>`;
+
+      card.innerHTML = `
+        <h3>${dateText}</h3>
+        <p>${meal.menu}</p>
+        ${meal.image ? `<img src="${meal.image}" alt="급식 사진" class="meal-img">` : ""}
+      `;
+
       resultDiv.appendChild(card);
     });
   } catch (e) {
