@@ -1,103 +1,116 @@
-const form = document.getElementById("searchForm");
-const input = document.getElementById("schoolInput");
-const schoolResults = document.getElementById("schoolResults");
-const mealsDiv = document.getElementById("meals");
+let selectedSchool = null;
 
-// ✅ form 제출 이벤트 (검색 버튼 클릭 시)
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  handleSearch();
-});
+// 학교 검색
+async function searchSchool() {
+  const name = document.getElementById("schoolInput").value.trim();
+  if (!name) return;
 
-// ✅ 엔터키 입력 이벤트 (검색창에 커서 있을 때)
-input.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    handleSearch();
-  }
-});
-
-async function handleSearch() {
-  const query = input.value.trim();
-  if (!query) return;
-
-  schoolResults.innerHTML = "검색 중...";
+  const schoolDiv = document.getElementById("schoolResult");
+  schoolDiv.innerHTML = "검색 중...";
 
   try {
-    const response = await fetch(`/api/schools?name=${encodeURIComponent(query)}`);
-    const data = await response.json();
+    const res = await fetch(`/api/schools?name=${encodeURIComponent(name)}`);
+    const schools = await res.json();
 
-    if (!data.schoolInfo) {
-      schoolResults.innerHTML = "학교를 찾을 수 없습니다.";
+    schoolDiv.innerHTML = "";
+
+    if (!schools || schools.length === 0) {
+      schoolDiv.innerHTML = "<p>검색된 학교가 없습니다.</p>";
       return;
     }
 
-    const schools = data.schoolInfo[1].row;
-    schoolResults.innerHTML = "";
+    schools.forEach(school => {
+      const item = document.createElement("div");
+      item.className = "school-item";
 
-    schools.forEach((school) => {
-      const div = document.createElement("div");
-      div.className = "school-item";
-      div.innerHTML = `
-        <strong>${school.SCHUL_NM}</strong><br>
-        <span style="color: gray; font-size: 14px;">${school.ORG_RDNMA}</span>
-      `;
-      div.addEventListener("click", () => loadMeals(school));
-      schoolResults.appendChild(div);
+      const schoolName = school.SCHUL_NM || school.name;
+      const schoolAddr = school.ORG_RDNMA || school.address || "";
+
+      item.innerHTML = `<strong>${schoolName}</strong> <span class="address">${schoolAddr}</span>`;
+
+      item.onclick = () => selectSchool({
+        officeCode: school.ATPT_OFCDC_SC_CODE,
+        schoolCode: school.SD_SCHUL_CODE,
+        name: schoolName,
+        address: schoolAddr
+      });
+
+      schoolDiv.appendChild(item);
     });
-  } catch (error) {
-    schoolResults.innerHTML = "학교 검색 오류 발생";
-    console.error(error);
+  } catch (e) {
+    console.error("학교 검색 오류:", e);
+    schoolDiv.innerHTML = "<p>학교 검색 중 오류 발생</p>";
   }
 }
 
-async function loadMeals(school) {
-  mealsDiv.innerHTML = "급식 정보를 불러오는 중...";
+function selectSchool(school) {
+  selectedSchool = school;
+  document.getElementById("mealControls").classList.remove("hidden");
 
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const now = new Date();
+  document.getElementById("monthSelect").value = now.getMonth() + 1;
+
+  loadMeals();
+}
+
+// 급식 불러오기
+async function loadMeals() {
+  if (!selectedSchool) return;
+  const year = new Date().getFullYear();
+  const month = document.getElementById("monthSelect").value;
+
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "급식 불러오는 중...";
 
   try {
-    const response = await fetch(
-      `/api/meals?code=${school.SD_SCHUL_CODE}&office=${school.ATPT_OFCDC_SC_CODE}&year=${year}&month=${month}`
-    );
-    const data = await response.json();
+    const res = await fetch(`/api/meals?officeCode=${selectedSchool.officeCode}&schoolCode=${selectedSchool.schoolCode}&year=${year}&month=${month}`);
+    const meals = await res.json();
 
-    if (!data.mealServiceDietInfo) {
-      mealsDiv.innerHTML = "급식 정보가 없습니다.";
+    resultDiv.innerHTML = "";
+
+    if (!meals || meals.length === 0) {
+      resultDiv.innerHTML = "<p>해당 월의 급식이 없습니다.</p>";
       return;
     }
 
-    const meals = data.mealServiceDietInfo[1].row;
-    mealsDiv.innerHTML = "";
+    meals.sort((a, b) => a.date.localeCompare(b.date));
 
-    meals.forEach((meal) => {
-      const dateStr = meal.MLSV_YMD;
-      const year = dateStr.substring(0, 4);
-      const month = dateStr.substring(4, 6);
-      const day = dateStr.substring(6, 8);
-      const formattedDate = `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
+    meals.forEach(meal => {
+      const y = meal.date.slice(0, 4);
+      const m = parseInt(meal.date.slice(4, 6));
+      const d = parseInt(meal.date.slice(6, 8));
+      const dateText = `${y}년 ${m}월 ${d}일`;
 
-      const mealDiv = document.createElement("div");
-      mealDiv.className = "meal-card";
+      const card = document.createElement("div");
+      card.className = "meal-card";
 
-      // ✅ 사진이 있을 때만 표시
-      let imgHTML = "";
-      if (meal.MLSV_FGR && meal.MLSV_FGR.trim() !== "") {
-        imgHTML = `<img src="${meal.MLSV_FGR}" alt="급식 사진" class="meal-img">`;
-      }
+      // ✅ 사진이 있으면만 img 추가
+      const imgHTML = meal.image ? `<img src="${meal.image}" alt="급식 사진" class="meal-img">` : "";
 
-      mealDiv.innerHTML = `
-        <h3>${formattedDate}</h3>
-        <p>${meal.DDISH_NM.replace(/<br\/>/g, ", ")}</p>
+      card.innerHTML = `
+        <h3>${dateText}</h3>
+        <p>${meal.menu}</p>
         ${imgHTML}
       `;
 
-      mealsDiv.appendChild(mealDiv);
+      resultDiv.appendChild(card);
     });
-  } catch (error) {
-    mealsDiv.innerHTML = "급식 불러오기 오류 발생";
-    console.error(error);
+  } catch (e) {
+    console.error("급식 불러오기 오류:", e);
+    resultDiv.innerHTML = "<p>급식 데이터를 불러오는 중 오류 발생</p>";
   }
 }
+
+// 알레르기 안내 토글
+function toggleAllergy() {
+  const info = document.getElementById("allergyInfo");
+  info.classList.toggle("hidden");
+}
+
+// ✅ 엔터 입력 시 검색 실행
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    searchSchool();
+  }
+});
