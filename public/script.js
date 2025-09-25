@@ -22,7 +22,6 @@ async function searchSchool() {
       const item = document.createElement("div");
       item.className = "school-item";
 
-      // NEIS API에서 오는 데이터 키 이름 맞추기
       const schoolName = school.SCHUL_NM || school.name;
       const schoolAddr = school.ORG_RDNMA || school.address || "";
 
@@ -96,3 +95,13 @@ function toggleAllergy() {
   const info = document.getElementById("allergyInfo");
   info.classList.toggle("hidden");
 }
+
+// ✅ 엔터 키로 검색 실행
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("schoolInput");
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      searchSchool();
+    }
+  });
+});
