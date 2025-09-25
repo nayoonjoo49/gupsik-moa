@@ -1,22 +1,26 @@
-// 검색 버튼 & 엔터 입력 둘 다 동작
 const form = document.getElementById("searchForm");
 const input = document.getElementById("schoolInput");
+const schoolResults = document.getElementById("schoolResults");
+const mealsDiv = document.getElementById("meals");
 
-form.addEventListener("submit", handleSearch);
-input.addEventListener("keydown", (e) => {
+// ✅ form 제출 이벤트 (검색 버튼 클릭 시)
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  handleSearch();
+});
+
+// ✅ 엔터키 입력 이벤트 (검색창에 커서 있을 때)
+input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    handleSearch(e);
+    handleSearch();
   }
 });
 
-async function handleSearch(e) {
-  e.preventDefault();
-
+async function handleSearch() {
   const query = input.value.trim();
   if (!query) return;
 
-  const schoolResults = document.getElementById("schoolResults");
   schoolResults.innerHTML = "검색 중...";
 
   try {
@@ -48,7 +52,6 @@ async function handleSearch(e) {
 }
 
 async function loadMeals(school) {
-  const mealsDiv = document.getElementById("meals");
   mealsDiv.innerHTML = "급식 정보를 불러오는 중...";
 
   const today = new Date();
@@ -79,7 +82,7 @@ async function loadMeals(school) {
       const mealDiv = document.createElement("div");
       mealDiv.className = "meal-card";
 
-      // 사진이 있을 경우만 출력
+      // ✅ 사진이 있을 때만 표시
       let imgHTML = "";
       if (meal.MLSV_FGR && meal.MLSV_FGR.trim() !== "") {
         imgHTML = `<img src="${meal.MLSV_FGR}" alt="급식 사진" class="meal-img">`;
