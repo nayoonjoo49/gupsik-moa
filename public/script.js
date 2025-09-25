@@ -5,14 +5,16 @@ async function searchSchool() {
   const name = document.getElementById("schoolInput").value.trim();
   if (!name) return;
 
+  const schoolDiv = document.getElementById("schoolResult");
+  schoolDiv.innerHTML = "<p>검색 중...</p>"; // ✅ 즉시 로딩 표시
+
   try {
-    const res = await fetch(`/api/schools?name=${name}`);
+    const res = await fetch(`/api/schools?name=${encodeURIComponent(name)}`);
     const schools = await res.json();
 
-    const schoolDiv = document.getElementById("schoolResult");
-    schoolDiv.innerHTML = "";
+    schoolDiv.innerHTML = ""; // 로딩 문구 지우기
 
-    if (schools.length === 0) {
+    if (!schools || schools.length === 0) {
       schoolDiv.innerHTML = "<p>검색된 학교가 없습니다.</p>";
       return;
     }
@@ -39,6 +41,7 @@ async function searchSchool() {
     });
   } catch (e) {
     console.error("학교 검색 오류:", e);
+    schoolDiv.innerHTML = "<p>학교 검색 중 오류 발생</p>";
   }
 }
 
@@ -66,7 +69,7 @@ async function loadMeals() {
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = "";
 
-    if (meals.length === 0) {
+    if (!meals || meals.length === 0) {
       resultDiv.innerHTML = "<p>해당 월의 급식이 없습니다.</p>";
       return;
     }
@@ -96,12 +99,10 @@ function toggleAllergy() {
   info.classList.toggle("hidden");
 }
 
-// ✅ 엔터 키로 검색 실행
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("schoolInput");
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      searchSchool();
-    }
-  });
+// ✅ 엔터키 입력 시 검색 실행
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault(); // 기본 엔터 동작 막기
+    searchSchool();
+  }
 });
