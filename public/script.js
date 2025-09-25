@@ -10,7 +10,10 @@ async function searchSchool() {
 
   try {
     const res = await fetch(`/api/schools?name=${encodeURIComponent(name)}`);
-    const schools = await res.json();
+    const data = await res.json();
+
+    // ✅ API 응답이 배열이면 그대로 schools, 아니면 schoolInfo 안에서 꺼냄
+    const schools = Array.isArray(data) ? data : (data.schoolInfo?.[1]?.row || []);
 
     schoolDiv.innerHTML = "";
 
@@ -84,7 +87,6 @@ async function loadMeals() {
       const card = document.createElement("div");
       card.className = "meal-card";
 
-      // ✅ 사진이 있으면만 img 추가
       const imgHTML = meal.image ? `<img src="${meal.image}" alt="급식 사진" class="meal-img">` : "";
 
       card.innerHTML = `
