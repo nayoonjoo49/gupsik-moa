@@ -30,7 +30,8 @@ export default async function handler(req, res) {
 
     const meals = data.mealServiceDietInfo[1].row.map(item => ({
       date: item.MLSV_YMD,
-      menu: item.DDISH_NM.replace(/<br\s*\/?>/gi, ', ')
+      menu: item.DDISH_NM.replace(/<br\s*\/?>/gi, ', '),
+      image: item.MLSV_FGR || null   // ✅ 급식 사진 URL
     }));
 
     res.status(200).json(meals);
