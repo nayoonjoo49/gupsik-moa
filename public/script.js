@@ -67,7 +67,7 @@ async function loadMeals(school) {
       const mealDiv = document.createElement("div");
       mealDiv.className = "meal-card";
 
-      // 사진이 있을 경우에만 <img> 추가
+      // 사진이 있을 경우에만 <img> 넣기
       let imgHTML = "";
       if (meal.MLSV_FGR && meal.MLSV_FGR.trim() !== "") {
         imgHTML = `<img src="${meal.MLSV_FGR}" alt="급식 사진" class="meal-img">`;
