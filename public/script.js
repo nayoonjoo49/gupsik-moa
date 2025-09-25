@@ -171,3 +171,11 @@ async function loadMeals() {
     resultBox.innerHTML = "<p>급식 데이터를 불러오는 중 오류 발생</p>";
   }
 }
+
+// ✅ 어디서든 엔터 누르면 검색 실행
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    searchSchool();
+  }
+});
